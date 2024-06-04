@@ -26,6 +26,7 @@ def build_transaction(web3, from_account, to_account, ehr_hash):
         'nonce': nonce,
         'data': web3.to_hex(text=ehr_hash)
     }
+    print(f"ehr_hash_to_hex : {web3.to_hex(text=ehr_hash)}")
     return transaction
 
 def sign_and_send_transaction(web3, transaction, private_key):
