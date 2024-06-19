@@ -64,14 +64,16 @@ class BlockChainProcess:
             print("Hash values do not match!")
             return False
 
-# # 定義電子病歷摘要
-ehr_summary = {
-    "patient_id": "123456",
-    "diagnosis": "Hypertension",
-    "prescription": "Medication A, Medication B",
-    "date": "2024-05-27"
-}
-black_chain_process = BlockChainProcess('0x2bdf99f7460156211739b275b9a22f983c011e55', '0x465047ba558172c7a8e9999bd2a080e7a0577e91', 'UTC--2024-05-22T08-23-18.599501038Z--2bdf99f7460156211739b275b9a22f983c011e55')
-tx_hash = black_chain_process.send_transaction(ehr_summary)
-transaction_data = black_chain_process.search_transaction(tx_hash)
-black_chain_process.verify_transaction(transaction_data, ehr_summary)
+
+if __name__ == "__main__" :
+    # # 定義電子病歷摘要
+    ehr_summary = {
+        "patient_id": "123456",
+        "diagnosis": "Hypertension",
+        "prescription": "Medication A, Medication B",
+        "date": "2024-05-27"
+    }
+    black_chain_process = BlockChainProcess('0x2bdf99f7460156211739b275b9a22f983c011e55', '0x465047ba558172c7a8e9999bd2a080e7a0577e91', 'UTC--2024-05-22T08-23-18.599501038Z--2bdf99f7460156211739b275b9a22f983c011e55')
+    tx_hash = black_chain_process.send_transaction(ehr_summary)
+    transaction_data = black_chain_process.search_transaction(tx_hash)
+    black_chain_process.verify_transaction(transaction_data, ehr_summary)
