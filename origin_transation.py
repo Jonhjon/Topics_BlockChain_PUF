@@ -5,14 +5,33 @@ from web3 import Web3
 
 from decrypt import decrypt_private_key
 
+
 class BlockChainProcess:
     def __init__(self, from_account: str, to_account: str, private_key_path: str) -> None:
         self._from_account = Web3.to_checksum_address(from_account)
         self._to_account = Web3.to_checksum_address(to_account)
         self._private_key = decrypt_private_key(private_key_path)
 
-        self.remote_node_address = 'http://192.168.1.109:8545'
-        self.web3 = Web3(Web3.HTTPProvider(self.remote_node_address))
+        self._remote_node_address = 'http://192.168.1.109:8545'
+        self._web3 = Web3(Web3.HTTPProvider(self._remote_node_address))
+
+    def Set_node_address(self, node_address: str) -> None:  #區塊鏈地址的set
+        self._remote_node_address = node_address
+
+    def Get_node_address(self):#區塊鏈地址的get
+        return self._remote_node_address
+
+    def Set_from_account(self, from_account: str) -> None:  #轉帳方的set
+        self._from_account = Web3.to_checksum_address(from_account)
+
+    def Get_from_account(self): #轉帳方的get
+        return self._from_account
+
+    def Set_to_account(self, to_account: str) -> None:  #接收方的set
+        self._to_account = Web3.to_checksum_address(to_account)
+
+    def Get_to_account(self):  #接受方的get
+        return self._to_account
 
     def __summary_ehr(self, ehr):
         # 將摘要轉換為 JSON 字符串並計算 SHA-256 哈希值
@@ -23,9 +42,9 @@ class BlockChainProcess:
 
     def send_transaction(self, ehr) -> str:
         ehr_hash = self.__summary_ehr(ehr)
-        nonce = self.web3.eth.get_transaction_count(self._from_account, 'pending')
+        nonce = self._web3.eth.get_transaction_count(self._from_account, 'pending')
         # nonce += random.randint(1, 1000)  # 增加随机性
-        print("\ndata_hash_toweb3 : ",self.web3.to_hex(text=ehr_hash))
+        print("\ndata_hash_toweb3 : ", self._web3.to_hex(text=ehr_hash))
         print("")
         # 構建交易
         transaction = {
@@ -33,24 +52,24 @@ class BlockChainProcess:
             'to': self._to_account,
             'value': 0,
             'gas': 100000,
-            'gasPrice': self.web3.to_wei('50', 'wei'),
+            'gasPrice': self._web3.to_wei('50', 'wei'),
             'nonce': nonce,
-            'data': self.web3.to_hex(text=ehr_hash)
+            'data': self._web3.to_hex(text=ehr_hash)
         }
 
         # 簽名交易
-        signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=self._private_key)
+        signed_txn = self._web3.eth.account.sign_transaction(transaction, private_key=self._private_key)
 
         # 發送交易
-        tx_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-        print("Transaction hash:", self.web3.to_hex(tx_hash))
-        return self.web3.to_hex(tx_hash)
-    
+        tx_hash = self._web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        print("Transaction hash:", self._web3.to_hex(tx_hash))
+        return self._web3.to_hex(tx_hash)
+
     def search_transaction(self, tx_hash):
-        tx = self.web3.eth.get_transaction(tx_hash)
+        tx = self._web3.eth.get_transaction(tx_hash)
         transaction_data = tx['input']
         return transaction_data
-    
+
     def verify_transaction(self, transaction_data, ehr):
         ehr_hash = self.__summary_ehr(ehr)
         retrieved_hash = str(transaction_data).strip("b'")
@@ -65,7 +84,7 @@ class BlockChainProcess:
             return False
 
 
-if __name__ == "__main__" :
+if __name__ == "__main__":
     # # 定義電子病歷摘要
     ehr_summary = {
         "patient_id": "123456",
@@ -73,7 +92,9 @@ if __name__ == "__main__" :
         "prescription": "Medication A, Medication B",
         "date": "2024-05-27"
     }
-    black_chain_process = BlockChainProcess('0x2bdf99f7460156211739b275b9a22f983c011e55', '0x465047ba558172c7a8e9999bd2a080e7a0577e91', 'UTC--2024-05-22T08-23-18.599501038Z--2bdf99f7460156211739b275b9a22f983c011e55')
+    black_chain_process = BlockChainProcess('0x2bdf99f7460156211739b275b9a22f983c011e55',
+                                            '0x465047ba558172c7a8e9999bd2a080e7a0577e91',
+                                            'UTC--2024-05-22T08-23-18.599501038Z--2bdf99f7460156211739b275b9a22f983c011e55')
     tx_hash = black_chain_process.send_transaction(ehr_summary)
     transaction_data = black_chain_process.search_transaction(tx_hash)
     black_chain_process.verify_transaction(transaction_data, ehr_summary)
