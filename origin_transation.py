@@ -15,22 +15,22 @@ class BlockChainProcess:
         self._remote_node_address = 'http://192.168.1.109:8545'
         self._web3 = Web3(Web3.HTTPProvider(self._remote_node_address))
 
-    def Set_node_address(self, node_address: str) -> None:  #區塊鏈地址的set
+    def set_node_address(self, node_address: str) -> None:  #區塊鏈地址的set
         self._remote_node_address = node_address
 
-    def Get_node_address(self):#區塊鏈地址的get
+    def get_node_address(self):#區塊鏈地址的get
         return self._remote_node_address
 
-    def Set_from_account(self, from_account: str) -> None:  #轉帳方的set
+    def set_from_account(self, from_account: str) -> None:  #轉帳方的set
         self._from_account = Web3.to_checksum_address(from_account)
 
-    def Get_from_account(self): #轉帳方的get
+    def get_from_account(self): #轉帳方的get
         return self._from_account
 
-    def Set_to_account(self, to_account: str) -> None:  #接收方的set
+    def set_to_account(self, to_account: str) -> None:  #接收方的set
         self._to_account = Web3.to_checksum_address(to_account)
 
-    def Get_to_account(self):  #接受方的get
+    def get_to_account(self):  #接受方的get
         return self._to_account
 
     def __summary_ehr(self, ehr):
