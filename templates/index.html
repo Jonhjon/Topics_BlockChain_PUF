@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blockchain EHR System</title>
+</head>
+<body>
+    <h1>Blockchain EHR System</h1>
+    <form id="ehr-form">
+        <label for="patient_id">Patient ID:</label>
+        <input type="text" id="patient_id" name="patient_id"><br>
+        <label for="diagnosis">Diagnosis:</label>
+        <input type="text" id="diagnosis" name="diagnosis"><br>
+        <label for="prescription">Prescription:</label>
+        <input type="text" id="prescription" name="prescription"><br>
+        <label for="date">Date:</label>
+        <input type="text" id="date" name="date"><br>
+        <button type="button" onclick="sendTransaction()">Send Transaction</button>
+    </form>
+
+    <h2>Search Transaction</h2>
+    <input type="text" id="tx_hash" placeholder="Transaction Hash">
+    <button type="button" onclick="searchTransaction()">Search</button>
+
+    <h2>Verify Transaction</h2>
+    <textarea id="transaction_data" placeholder="Transaction Data"></textarea>
+    <button type="button" onclick="verifyTransaction()">Verify</button>
+
+    <script>
+        async function sendTransaction() {
+            const ehrSummary = {
+                patient_id: document.getElementById('patient_id').value,
+                diagnosis: document.getElementById('diagnosis').value,
+                prescription: document.getElementById('prescription').value,
+                date: document.getElementById('date').value
+            };
+            const response = await fetch('/send_transaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(ehrSummary)
+            });
+            const data = await response.json();
+            alert('Transaction Hash: ' + data.transaction_hash);
+        }
+
+        async function searchTransaction() {
+            const txHash = document.getElementById('tx_hash').value;
+            const response = await fetch('/search_transaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ tx_hash: txHash })
+            });
+            const data = await response.json();
+            document.getElementById('transaction_data').value = data.transaction_data;
+        }
+
+        async function verifyTransaction() {
+            const transactionData = document.getElementById('transaction_data').value;
+            const ehrSummary = {
+                patient_id: document.getElementById('patient_id').value,
+                diagnosis: document.getElementById('diagnosis').value,
+                prescription: document.getElementById('prescription').value,
+                date: document.getElementById('date').value
+            };
+            const response = await fetch('/verify_transaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ transaction_data: transactionData, ehr_summary: ehrSummary })
+            });
+            const data = await response.json();
+            alert('Verification result: ' + data.is_verified);
+        }
+    </script>
+</body>
+</html>
