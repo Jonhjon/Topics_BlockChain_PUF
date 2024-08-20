@@ -54,7 +54,8 @@ class BlockChainProcess:
             'gas': 100000,
             'gasPrice': self._web3.to_wei('50', 'wei'),
             'nonce': nonce,
-            'data': self._web3.to_hex(text=ehr_hash)
+            'data': self._web3.to_hex(text=ehr_hash),
+            'PUF': 0
         }
 
         # 簽名交易
