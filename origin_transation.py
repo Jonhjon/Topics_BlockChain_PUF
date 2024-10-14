@@ -54,8 +54,7 @@ class BlockChainProcess:
             'gas': 100000,
             'gasPrice': self._web3.to_wei('50', 'wei'),
             'nonce': nonce,
-            'data': self._web3.to_hex(text=ehr_hash),
-            'PUF': 0
+            'data': self._web3.to_hex(text=ehr_hash)
         }
 
         # 簽名交易
@@ -85,6 +84,7 @@ class BlockChainProcess:
             return False
 
 
+# 下面這段僅用於測試邏輯，不參與flask應用執行
 if __name__ == "__main__":
     # # 定義電子病歷摘要
     ehr_summary = {
